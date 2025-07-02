@@ -81,6 +81,32 @@ app.post('/upload', authenticateToken, upload.single('csv'), (req, res) => {
   });
 });
 
+const budgets = [];
+
+app.post('/budgets', authenticateToken, (req, res) => {
+  // In a real application, you would store this in a database
+  const budget = { ...req.body, user: req.user.email };
+  budgets.push(budget);
+  console.log('Budget created:', budget);
+  res.status(201).json({ message: 'Budget created successfully' });
+});
+
+app.get('/budgets', authenticateToken, (req, res) => {
+  // In a real application, you would retrieve this from a database
+  const userBudgets = budgets.filter(budget => budget.user === req.user.email);
+  res.json(userBudgets);
+});
+
+app.get('/insights', authenticateToken, (req, res) => {
+  // In a real application, you would calculate these insights based on transaction data
+  // For now, we'll just return placeholder data
+  const insights = [
+    { message: 'Food spending increased 22% this month', type: 'negative' },
+    { message: 'You’ve spent ₹3000 less than last month – great job!', type: 'positive' }
+  ];
+  res.json(insights);
+});
+
 app.get('/protected', authenticateToken, (req, res) => {
   res.json({ message: 'Protected route accessed successfully' });
 });
